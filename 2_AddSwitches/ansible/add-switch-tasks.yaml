@@ -1,0 +1,12 @@
+- name: Merge switch into fabric
+  cisco.dcnm.dcnm_inventory:
+    fabric: "AUTO-POD{{pod_num}}-DC{{dc_num}}"
+    state: merged # merged / deleted / overridden / query
+    config:
+    - seed_ip: "{{switch.mgmt_ip}}"
+      auth_proto: MD5 # choose from [MD5, SHA, MD5_DES, MD5_AES, SHA_DES, SHA_AES]
+      user_name: "{{username}}"
+      password: "{{password}}"
+      max_hops: 0
+      role: "{{switch.role}}"
+      preserve_config: False # boolean, default is  true

@@ -1,0 +1,36 @@
+[
+  {
+    "serialNumber": "9245KQ1ZB5Y",
+    "model": "N9K-C9300v",
+    "version": "10.2(3)",
+    "hostname": "DC1-SPINE1",
+    "ipAddress": "100.64.201.2",
+    "password": "C!sco123",
+    "discoveryAuthProtocol": 0,
+    "data": "{\"modulesModel\": [\"N9K-X9364v\", \"N9K-vSUP\"], \"gateway\": \"100.64.201.1/26\"}",
+    "fingerprint": "'SHA256:6XW1Hh9XKkIxFTih2d/h/7qzY/7CkGez8fKv6hrRcyA",
+    "publicKey": "'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDetE6c3ltKTXFbe7bDCeTtNbN3FXnNfjqwRxdRF0UVcqKYJbqI4ENvIoKluLpml0qPFmdCJXnhxrsD5Ccq7GHmx0kTbKCbg0oTnjD/zgnB3Oq75LKOYxJfAIG8a9aYzXP2K63SKXRQXaztjcqvg8fXeu7M7X+nFuXEG1IZtKVaqXIO1WNnoYsB7Zi321FLpjdTgoXlCSNad4J+VE7YY1D17kzO09pYHmMrZpkE9GeAKYFZoG3kDuNm21+D/BaKh1YP/W0eOyi6FtIMjLijPk5EL+UWQTlx1b0fCwGZuwuOn8ktc+N9fCO0DQ3kYmA+q42k6A31Icc6DH4hUreTE/gPyIbqIQ5KjOEviFPD4nydeyVDGoy04Qu0tCOCuZ1+6ZXWHliaAmlM2RaujYGiqTnzDkRylRf7j0kvL4sjYf1OthnGlaipQ5l0q245coj6FAcHj4aeP2mMnij1Do+//Au+DysVWuJUQtkfrf6yKo+ApC1troxr+p6iASeKFlxtlUM=",
+    "reAdd": false,
+    "imagePolicy": "",
+    "role": "spine"
+  }
+]
+
+
+[
+  {
+    "serialNumber": "9LX3N37XJ76",
+    "model": "N9K-C9300v",
+    "version": "10.2(3)",
+    "hostname": "DC2-VGW1",
+    "ipAddress": "100.64.202.2",
+    "password": "C!sco123",
+    "discoveryAuthProtocol": 0,
+    "data": "{\"modulesModel\": [\"N9K-X9364v\", \"N9K-vSUP\"], \"gateway\": \"100.64.201.65/26\"}",
+    "fingerprint": "'MD5:af:05:bd:12:57:6d:09:ba:32:6d:02:ba:57:7c:64:b5",
+    "publicKey": "'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDRkXX7iHgQpWfgnKzjpFXsYwTos0l2CxsizV+t2mdsy/XdU+/+tLBvAlNXOmt1jsAydy+aeXT/GBX1TR+KhwUcUOcy2TNTcDSEWZj6HmA5FDQmUO3bebUQAHu0JRXx7O9x5JSSNJsU5j3tMNfO9q3iHWwjaAz8m1xhChZjRRZo7OskI3GBlvOh4o/vrUzXMWHDIvGbHKl9WqTZ4LgHnHMRuht4qf/PTmFpw5PFfiiv4ndWW1p52kh1gSvo+PD3MPB8RTXqhnXDaMvdgILBWSu+GpYZsij7cGx1fkFuTbE0jOR4qx7O4l5HyYMPWA3oDx7GBdEIVNz5y+AXyVfCs4kEnUTyygKGhwo+U1uVDUPniFjgYyBiOUvMyJ7EWkV+xrhELD2l4/q5UlSJv+mY11neMiFTCAzBppDD8YlcQXMg+hiBjF+9v7tI3tkohCQqY4qEa5lUWYcc1BVe4eO9Sq5ohEKThjgFnw7ggOI8LJPTQFsJA/xcaiaifw0N/PJ8FBs=",
+    "reAdd": false,
+    "imagePolicy": "",
+    "role": "border gateway"
+  }
+]

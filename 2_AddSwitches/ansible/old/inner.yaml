@@ -1,0 +1,55 @@
+# - name: GET POAP Device List
+#   vars:
+#     dc_num: 1
+#   dcnm_rest:
+#     method: GET
+#     path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/AUTO-POD{{pod_num}}-DC{{dc_num}}/inventory/poap"
+#   register: devices
+# - name: Extract Response
+#   set_fact:
+#     response: "{{devices.response}}"
+# - name: Extract DATA
+#   ansible.builtin.debug:
+#     msg: "{{response.DATA}}"
+- name: set_fact when serialNumber found
+  ansible.builtin.set_fact:
+    data: "{{item.data}}"
+    fingerprint: "{{item.fingerprint}}"
+    publicKey: "{{item.publicKey}}"
+  loop: "{{ response.DATA }}"
+  when: "'{{switch.serialNumber}}' in item.serialNumber"
+- name: Create POAP Definition
+  # vars:
+  #   # serial_num: "{{switch.serialNumber}}"
+  #   # hostname: "{{switch.name}}"
+  #   # mgmt_ip: "{{switch.mgmt_ip}}"
+  #   # password: "{{password}}"
+  #   # role: "{{switch.role}}"
+  #   # data: "{{data}}"
+  #   # fingerprint: "{{fingerprint}}"
+  #   # publicKey: "{{publicKey}}"
+  set_fact:
+    payload:
+      - serialNumber: "{{switch.serialNumber}}"
+        model: "N9K-C9300v"
+        version: "10.2(3)"
+        hostname: "{{switch.name}}"
+        ipAddress: "{{switch.mgmt_ip}}"
+        password: "{{password}}"
+        discoveryAuthProtocol: 0
+        data: "{{data | to_json }}" #"{{data | regex_replace('(\\')', '\"') }}"
+        fingerprint: "{{fingerprint}}"
+        publicKey: "{{publicKey}}"
+        reAdd: false
+        imagePolicy: ""
+        role: "{{switch.role}}"
+- name: JSON Payload
+  ansible.builtin.debug:
+    msg: "{{ payload | to_json }}"
+- name: POST New Fabric JSON
+  vars:
+    dc_num: 1
+  dcnm_rest:
+    method: POST
+    path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/AUTO-POD{{pod_num}}-DC{{dc_num}}/inventory/poap"
+    data: "{{ payload | to_json }}"

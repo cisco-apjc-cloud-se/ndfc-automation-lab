@@ -1,0 +1,17 @@
+[
+  {
+    "serialNumber": "{{serial_num}}",
+    "model": "N9K-C9300v",
+    "version": "10.2(3)",
+    "hostname": "{{hostname}}",
+    "ipAddress": "{{mgmt_ip}}",
+    "password": "{{password}}",
+    "discoveryAuthProtocol": 0,
+    "data": "{\"modulesModel\": [\"N9K-X9364v\", \"N9K-vSUP\"], \"gateway\": \"100.64.201.1/26\"}",
+    "fingerprint": "'SHA256:6XW1Hh9XKkIxFTih2d/h/7qzY/7CkGez8fKv6hrRcyA",
+    "publicKey": "'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDetE6c3ltKTXFbe7bDCeTtNbN3FXnNfjqwRxdRF0UVcqKYJbqI4ENvIoKluLpml0qPFmdCJXnhxrsD5Ccq7GHmx0kTbKCbg0oTnjD/zgnB3Oq75LKOYxJfAIG8a9aYzXP2K63SKXRQXaztjcqvg8fXeu7M7X+nFuXEG1IZtKVaqXIO1WNnoYsB7Zi321FLpjdTgoXlCSNad4J+VE7YY1D17kzO09pYHmMrZpkE9GeAKYFZoG3kDuNm21+D/BaKh1YP/W0eOyi6FtIMjLijPk5EL+UWQTlx1b0fCwGZuwuOn8ktc+N9fCO0DQ3kYmA+q42k6A31Icc6DH4hUreTE/gPyIbqIQ5KjOEviFPD4nydeyVDGoy04Qu0tCOCuZ1+6ZXWHliaAmlM2RaujYGiqTnzDkRylRf7j0kvL4sjYf1OthnGlaipQ5l0q245coj6FAcHj4aeP2mMnij1Do+//Au+DysVWuJUQtkfrf6yKo+ApC1troxr+p6iASeKFlxtlUM=",
+    "reAdd": false,
+    "imagePolicy": "",
+    "role": "spine"
+  }
+]

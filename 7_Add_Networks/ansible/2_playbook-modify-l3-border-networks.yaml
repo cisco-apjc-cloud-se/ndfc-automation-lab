@@ -1,0 +1,39 @@
+---
+- name: IaC Workshop - Modify Networks for L3 Border Support
+  hosts: ndfc
+  gather_facts: false
+  connection: httpapi
+  collections:
+    - cisco.dcnm
+  vars:
+    pod_num: 2
+    networks:
+      - ANSIBLE-NET11
+      - ANSIBLE-NET12
+  tasks:
+    - name: Modify Selected Networks at DC1 Fabric Level
+      vars:
+        dc_num: 1
+      include_tasks: modify-network-tasks.yaml
+      loop: "{{networks}}"
+      loop_control:
+        loop_var: network
+    - name: Modify Selected Networks at DC2 Fabric Level
+      vars:
+        dc_num: 2
+      include_tasks: modify-network-tasks.yaml
+      loop: "{{networks}}"
+      loop_control:
+        loop_var: network
+    - name: POST Config Deploy for DCs
+      vars:
+        dc_list:
+          - 1
+          - 2
+      dcnm_rest:
+        method: POST
+        path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/AUTO-POD{{pod_num}}-DC{{item}}/config-deploy"
+        data: null
+      with_items: "{{dc_list}}"
+      ignore_errors: yes
+      timeout: 180

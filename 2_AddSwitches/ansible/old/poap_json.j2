@@ -1,0 +1,17 @@
+[
+  {
+    "serialNumber": "{{serial_num}}",
+    "model": "N9K-C9300v",
+    "version": "10.2(3)",
+    "hostname": "{{hostname}}",
+    "ipAddress": "{{mgmt_ip}}",
+    "password": "{{password}}",
+    "discoveryAuthProtocol": 0,
+    "data": "{{data | regex_replace('(\')', '\"') }}",
+    "fingerprint": "{{fingerprint}}",
+    "publicKey": "{{publicKey}}",
+    "reAdd": false,
+    "imagePolicy": "",
+    "role": "{{role}}"
+  }
+]

@@ -1,0 +1,58 @@
+---
+- name: IaC Workshop - VRF Lite Peering Link Templates
+  hosts: ndfc
+  gather_facts: false
+  connection: httpapi
+  collections:
+    - cisco.dcnm
+  vars:
+    pod_num: 2
+  tasks:
+    - name: QUERY Fabric Links
+      dcnm_rest:
+        method: GET
+        path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/links/fabrics/AUTO-POD{{pod_num}}-MSD"
+      register: links
+    - name: QUERY Result
+      set_fact:
+        data: "{{ links.response.DATA }}"
+    - name: Display Result
+      ansible.builtin.debug:
+        msg: "{{ data }}"
+    - name: Filter Result for DC1 Links
+      vars:
+        dc1_wan_links: []
+        query: "[?fabricName=='AUTO-POD{{pod_num}}-DC1<->AUTO-POD{{pod_num}}-WAN']"
+      set_fact:
+        dc1_wan_links: "{{ dc1_wan_links + [item] }}"
+      loop: "{{ data | to_json | from_json | community.general.json_query( query ) }}"
+    - name: Filter Result for DC2 Links
+      vars:
+        dc2_wan_links: []
+        query: "[?fabricName=='AUTO-POD{{pod_num}}-DC2<->AUTO-POD{{pod_num}}-WAN']"
+      set_fact:
+        dc2_wan_links: "{{ dc2_wan_links  + [item] }}"
+      loop: "{{ data | to_json | from_json | community.general.json_query( query ) }}"
+    - name: Merge Link Dictionaries
+      set_fact:
+        wan_links: "{{ dc1_wan_links + dc2_wan_links }}"
+    - name: Display Result
+      ansible.builtin.debug:
+        msg: "{{ wan_links }}"
+    - name: Modify Link Template for VRF Lite Peering
+      include_tasks: modify-link-template-tasks.yaml
+      loop: "{{wan_links | sort(attribute='sw1-info.sw-sys-name') }}"
+      loop_control:
+        index_var: idx
+    - name: POST Config Deploy
+      vars:
+        dc_list:
+          - 1
+          - 2
+      dcnm_rest:
+        method: POST
+        path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/AUTO-POD{{pod_num}}-DC{{item}}/config-deploy"
+        data: null
+      with_items: "{{dc_list}}"
+      ignore_errors: yes
+      timeout: 180
