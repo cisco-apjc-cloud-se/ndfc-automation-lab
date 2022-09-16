@@ -1,0 +1,40 @@
+---
+- name: IaC Workshop - Remove Child Fabrics from MSD FABRIC_VPC_QOS
+  hosts: ndfc
+  gather_facts: false
+  connection: httpapi
+  collections:
+    - cisco.dcnm
+  vars:
+    pod_num: 2
+  tasks:
+    - name: Build Ext Fabric JSON Payload
+      set_fact:
+        payload:
+          destFabric: "AUTO-POD{{pod_num}}-MSD"
+          sourceFabric: "AUTO-POD{{pod_num}}-WAN"
+    - name: JSON Payload
+      ansible.builtin.debug:
+        msg: "{{ payload }}"
+    - name: POST MSD Remove External Fabric JSON
+      dcnm_rest:
+        method: POST
+        path: /appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/msdExit
+        data: "{{ payload | to_json }}"
+      ignore_errors: true
+    - name: Remove Child VXLAN Fabrics from MSD
+      vars:
+        children:
+          - 1
+          - 2
+      include_tasks: remove-child-tasks.yaml
+      loop: "{{children}}"
+      loop_control:
+        loop_var: dc_num
+      ignore_errors: true
+    - name: DELETE MSD Fabric JSON
+      dcnm_rest:
+        method: DELETE
+        path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/AUTO-POD{{pod_num}}-MSD"
+        # json_data: "{{ payload }}"
+      ignore_errors: true

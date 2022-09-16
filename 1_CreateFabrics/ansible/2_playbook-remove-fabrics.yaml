@@ -1,0 +1,23 @@
+---
+- name: IaC Workshop - Remove Pod Fabrics
+  hosts: ndfc
+  gather_facts: false
+  connection: httpapi
+  collections:
+    - cisco.dcnm
+  vars:
+    pod_num: 2
+  tasks:
+  - name: DELETE All Pod Fabrics JSON
+    vars:
+      fabrics:
+        # - DC1
+        # - DC2
+        - WAN
+    dcnm_rest:
+      method: DELETE
+      path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/AUTO-POD{{pod_num}}-{{fabric}}"
+    ignore_errors: true
+    loop: "{{fabrics}}"
+    loop_control:
+      loop_var: fabric

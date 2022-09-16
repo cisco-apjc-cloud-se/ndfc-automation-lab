@@ -1,0 +1,72 @@
+---
+- name: IaC Workshop - Delete Networks
+  hosts: ndfc
+  gather_facts: false
+  connection: httpapi
+  collections:
+    - cisco.dcnm
+  vars:
+    pod_num: 2
+  tasks:
+    - name: Delete Networks at MSD Fabric
+      dcnm_network:
+        fabric: "AUTO-POD{{pod_num}}-MSD"
+        state: deleted
+        config:
+        - net_name: ANSIBLE-NET11
+          vrf_name: ANSIBLE-VRF1
+          net_id: 32100
+          net_template: Default_Network_Universal
+          net_extension_template: Default_Network_Extension_Universal
+          vlan_id: 100
+          gw_ip_subnet: '192.168.1.1/24'
+          attach:
+          ## LEAFS
+          - ip_address: "100.64.20{{pod_num}}.4"
+            ports:
+              - Port-channel100
+          - ip_address: "100.64.20{{pod_num}}.5"
+            ports:
+              - Port-channel100
+          ## ABGWS
+          - ip_address: "100.64.20{{pod_num}}.6"
+            ports: []
+          - ip_address: "100.64.20{{pod_num}}.7"
+            ports: []
+          ## VBGWS
+          - ip_address: "100.64.20{{pod_num}}.66"
+            ports:
+              - Port-channel100
+          - ip_address: "100.64.20{{pod_num}}.67"
+            ports:
+              - Port-channel100
+          deploy: true
+        - net_name: ANSIBLE-NET12
+          vrf_name: ANSIBLE-VRF1
+          net_id: 32101
+          net_template: Default_Network_Universal
+          net_extension_template: Default_Network_Extension_Universal
+          vlan_id: 101
+          gw_ip_subnet: '192.168.2.1/24'
+          attach:
+          ## LEAFS
+          - ip_address: "100.64.20{{pod_num}}.4"
+            ports:
+              - Port-channel100
+          - ip_address: "100.64.20{{pod_num}}.5"
+            ports:
+              - Port-channel100
+          ## ABGWS
+          - ip_address: "100.64.20{{pod_num}}.6"
+            ports: []
+          - ip_address: "100.64.20{{pod_num}}.7"
+            ports: []
+          ## VBGWS
+          - ip_address: "100.64.20{{pod_num}}.66"
+            ports:
+              - Port-channel100
+          - ip_address: "100.64.20{{pod_num}}.67"
+            ports:
+              - Port-channel100
+          deploy: true
+      timeout: 180
