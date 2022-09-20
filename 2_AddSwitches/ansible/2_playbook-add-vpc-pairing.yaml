@@ -1,0 +1,22 @@
+---
+- name: IaC Workshop - Add vPC Peering for Switches
+  hosts: ndfc
+  gather_facts: false
+  connection: httpapi
+  collections:
+    - cisco.dcnm
+  vars_prompt:
+    - name: pod_num
+      prompt: Please enter Pod number (0-9)?
+      private: no
+  tasks:
+    - name: Peer DC1-LEAF1 and DC2-LEAF2 Switches
+      vars:
+        first_switch: "DC1-LEAF1"
+        second_switch: "DC1-LEAF2"
+      include_tasks: vpc-pairing-tasks.yaml
+    - name: Peer DC2-VBGW1 and DC2-VBGW2 Switches
+      vars:
+        first_switch: "DC2-VBGW1"
+        second_switch: "DC2-VBGW2"
+      include_tasks: vpc-pairing-tasks.yaml

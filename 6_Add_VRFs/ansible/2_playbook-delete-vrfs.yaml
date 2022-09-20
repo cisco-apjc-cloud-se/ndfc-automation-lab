@@ -5,9 +5,15 @@
   connection: httpapi
   collections:
     - cisco.dcnm
-  vars:
-    pod_num: 2
+  vars_prompt:
+    - name: pod_num
+      prompt: Enter Pod number to delete
+      private: no
   tasks:
+    - name: Confirm Deletion
+      pause:
+        prompt: "Are you sure you want to delete VRFs for Pod #{{pod_num}}? (yes/no)"
+      register: confirm_delete
     - name: Delete VRFs at MSD Fabric
       dcnm_vrf:
         fabric: "AUTO-POD{{pod_num}}-MSD"
@@ -70,4 +76,5 @@
           - ip_address: "100.64.20{{pod_num}}.66"
           - ip_address: "100.64.20{{pod_num}}.67"
       # ignore_errors: yes
-      timeout: 180
+      # timeout: 180
+      when: confirm_delete.user_input | bool

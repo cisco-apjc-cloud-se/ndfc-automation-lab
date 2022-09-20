@@ -5,9 +5,15 @@
   connection: httpapi
   collections:
     - cisco.dcnm
-  vars:
-    pod_num: 2
+  vars_prompt:
+    - name: pod_num
+      prompt: Enter Pod number to delete
+      private: no
   tasks:
+    - name: Confirm Deletion
+      pause:
+        prompt: "Are you sure you want to delete vPC interfaces for Pod #{{pod_num}}? (yes/no)"
+      register: confirm_delete
     - name: Delete vPC interfaces in DC1
       vars:
         dc_num: 1
@@ -38,8 +44,32 @@
               peer2_allowed_vlans: none       # choose from [none, all, vlan range]
               peer1_description: "VPC 100 - Peer 1"
               peer2_description: "VPC 100 - Peer 2"
+          - name: vpc101                      # should be of the form vpc<port-id>
+            type: vpc                         # choose from this list [pc, vpc, sub_int, lo, eth]
+            switch:                           # provide switches of vPC pair
+              - ["100.64.20{{pod_num}}.4",
+                  "100.64.20{{pod_num}}.5"]
+            deploy: true                      # choose from [true, false]
+            profile:
+              admin_state: true               # choose from [true, false]
+              mode: trunk                     # choose from [trunk, access]
+              peer1_pcid: 101                 # choose between [Min:1, Max:4096], if not given, will be VPC port-id
+              peer2_pcid: 101                 # choose between [Min:1, Max:4096], if not given, will be VPC port-id
+              peer1_members:                  # member interfaces on peer 1
+                - e1/6
+              peer2_members:                  # member interfaces on peer 2
+                - e1/6
+              pc_mode: 'active'               # choose from ['on', 'active', 'passive']
+              bpdu_guard: true                # choose from [true, false, 'no']
+              port_type_fast: true            # choose from [true, false]
+              mtu: jumbo                      # choose from [default, jumbo]
+              peer1_allowed_vlans: none       # choose from [none, all, vlan range]
+              peer2_allowed_vlans: none       # choose from [none, all, vlan range]
+              peer1_description: "VPC 101 - Peer 1"
+              peer2_description: "VPC 101 - Peer 2"
       ignore_errors: yes
-      timeout: 180
+      # timeout: 180
+      when: confirm_delete.user_input | bool
     - name: Delete vPC interfaces in DC2
       vars:
         dc_num: 2
@@ -71,4 +101,5 @@
               peer1_description: "VPC 100 - Peer 1"
               peer2_description: "VPC 100 - Peer 2"
       ignore_errors: yes
-      timeout: 180
+      # timeout: 180
+      when: confirm_delete.user_input | bool

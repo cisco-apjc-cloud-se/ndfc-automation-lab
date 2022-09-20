@@ -1,0 +1,46 @@
+---
+- name: IaC Workshop - Move Discovered Neighbor to WAN External Fabric
+  hosts: ndfc
+  gather_facts: false
+  connection: httpapi
+  collections:
+    - cisco.dcnm
+  vars_prompt:
+    - name: pod_num
+      prompt: Please enter Pod number (0-9)?
+      private: no
+  vars:
+    ansible_command_timeout: 600
+    # ansible_connect_timeout: 180
+  tasks:
+    - name:  Query Fabric Details
+      dcnm_rest:
+        method: GET
+        path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/AUTO-POD{{pod_num}}-WAN"
+      register: fabric
+    - name: Query Neighbor Switches  ## NOTE:  All Pods shown!
+      dcnm_rest:
+        method: GET
+        path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/inventory/neighborSwitches"
+      register: neighbors
+    - name: Set conditional
+      set_fact:
+        test: "POD{{pod_num}}-WAN"
+    - name: Filter neighbors for those with correct name
+      # vars:
+      #   data: []
+      set_fact:
+        # data: "{{ data + [item] }}"
+        data: "{{item}}"
+      when: test == item['sw-sys-name']
+      loop: "{{ neighbors.response.DATA.switches }}"
+    - debug:
+        msg: "{{data}}"
+    - set_fact:
+        switch_uuid: "{{data['sw-UUID-ID']}}"
+        fabric_id: "{{fabric.response.DATA.id}}"
+    - name: Move Neighbor Switch to Fabric
+      dcnm_rest:
+        method: POST
+        path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/inventory/setNeighborSwitchFabricId/?sw-UUID-ID={{switch_uuid}}&fabricID={{fabric_id}}"
+        data: null

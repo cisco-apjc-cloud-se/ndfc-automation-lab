@@ -5,15 +5,19 @@
   connection: httpapi
   collections:
     - cisco.dcnm
-  vars:
-    pod_num: 2
+  vars_prompt:
+    - name: pod_num
+      prompt: Please enter Pod number (0-9)?
+      private: no
   tasks:
   - name: Build 1st DC JSON Payload from Template
     vars:
       dc_num: 1
       mgmt_gw: "100.64.20{{pod_num}}.1"
+      dhcp_start: "100.64.20{{pod_num}}.34"
+      dhcp_stop: "100.64.20{{pod_num}}.62"
     set_fact:
-      payload: "{{ lookup('ansible.builtin.template', './fabric_json.j2') | to_json }}"
+      payload: "{{ lookup('ansible.builtin.template', './fabric_json.j2') }}" # | to_json
   - name: JSON Payload
     ansible.builtin.debug:
       msg: "{{ payload }}"
@@ -21,14 +25,16 @@
     dcnm_rest:
       method: POST
       path: /appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics
-      json_data: "{{ payload }}"
+      data: "{{ payload | to_json }}"
     ignore_errors: true
   - name: Build 2nd DC JSON Payload from Template
     vars:
       dc_num: 2
       mgmt_gw: "100.64.20{{pod_num}}.65"
+      dhcp_start: "100.64.20{{pod_num}}.98"
+      dhcp_stop: "100.64.20{{pod_num}}.126"
     set_fact:
-      payload: "{{ lookup('ansible.builtin.template', './fabric_json.j2') | to_json }}"
+      payload: "{{ lookup('ansible.builtin.template', './fabric_json.j2') }}" # | to_json
   - name: JSON Payload
     ansible.builtin.debug:
       msg: "{{ payload }}"
@@ -36,11 +42,11 @@
     dcnm_rest:
       method: POST
       path: /appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics
-      json_data: "{{ payload }}"
+      data: "{{ payload | to_json }}"
     ignore_errors: true
   - name: Build External Fabric JSON Payload from Template
     set_fact:
-      payload: "{{ lookup('ansible.builtin.template', './ext_json.j2') | to_json }}"
+      payload: "{{ lookup('ansible.builtin.template', './ext_json.j2') }}" # | to_json
   - name: JSON Payload
     ansible.builtin.debug:
       msg: "{{ payload }}"
@@ -48,7 +54,7 @@
     dcnm_rest:
       method: POST
       path: /appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics
-      json_data: "{{ payload }}"  # - name: Result
+      data: "{{ payload | to_json }}"
     ignore_errors: true
   #   ansible.builtin.debug:
   #     msg: "{{ result }}"

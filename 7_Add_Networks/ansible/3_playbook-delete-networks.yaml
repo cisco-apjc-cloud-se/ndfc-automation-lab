@@ -5,10 +5,17 @@
   connection: httpapi
   collections:
     - cisco.dcnm
-  vars:
-    pod_num: 2
+  vars_prompt:
+    - name: pod_num
+      prompt: Enter Pod number to delete
+      private: no
   tasks:
+    - name: Confirm Deletion
+      pause:
+        prompt: "Are you sure you want to delete networks for Pod #{{pod_num}}? (yes/no)"
+      register: confirm_delete
     - name: Delete Networks at MSD Fabric
+      # timeout: 180
       dcnm_network:
         fabric: "AUTO-POD{{pod_num}}-MSD"
         state: deleted
@@ -69,4 +76,4 @@
             ports:
               - Port-channel100
           deploy: true
-      timeout: 180
+      when: confirm_delete.user_input | bool

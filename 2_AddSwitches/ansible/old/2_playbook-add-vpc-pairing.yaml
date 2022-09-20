@@ -1,0 +1,47 @@
+---
+- name: IaC Workshop - Add vPC Peering for Switches
+  hosts: ndfc
+  gather_facts: false
+  connection: httpapi
+  collections:
+    - cisco.dcnm
+  vars_prompt:
+    - name: pod_num
+      prompt: Please enter Pod number (0-9)?
+      private: no
+  tasks:
+    # - name: Query DC1 switch inventory
+    #   dcnm_inventory:
+    #     fabric: "AUTO-POD{{pod_num}}-DC1"
+    #     state: query # merged / deleted / overridden / query
+    #   register: inventory
+    # - name: Show inventory
+    #   ansible.builtin.debug:
+    #     msg: {{inventory}}
+    - name: Peer Switches in DC1
+      vars_prompt:
+        - name: peerOneId
+          prompt: Please enter DC1-LEAF1 serial number (i.e. 97NYUVAU6R4)?
+          private: no
+        - name: peerTwoId
+          prompt: Please enter DC1-LEAF2 serial number (i.e. 97NYUVAU6R4)?
+          private: no
+      vars:
+        # vpc_pairs:
+        #   # - peerOneId: 9JV0UUSBF8I
+        #   #   peerTwoId: 9KS1O7CNJJG
+        #   - peerOneId: 9K49T1EJVL1
+        #     peerTwoId: 9T3ILDL95HJ
+      include_tasks: vpc-pairing-tasks.yaml
+      loop: "{{vpc_pairs}}"
+      loop_control:
+        loop_var: pair
+    - name: Peer Switches in DC2
+      vars:
+        vpc_pairs:
+          - peerOneId: 9LX3N37XJ76
+            peerTwoId: 9F1CK93TQKZ
+      include_tasks: vpc-pairing-tasks.yaml
+      loop: "{{vpc_pairs}}"
+      loop_control:
+        loop_var: pair

@@ -5,8 +5,11 @@
   connection: httpapi
   collections:
     - cisco.dcnm
+  vars_prompt:
+    - name: pod_num
+      prompt: Please enter Pod number (0-9)?
+      private: no
   vars:
-    pod_num: 2
     username: "admin"
     password: "C!sco123"
     ansible_command_timeout: 1000 # requried for dcnm_inventory

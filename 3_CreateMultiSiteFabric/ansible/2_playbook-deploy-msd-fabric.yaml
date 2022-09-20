@@ -1,27 +1,32 @@
 ---
-- name: IaC Workshop - Trigger Build & Deploy Configuration for MSD Fabric
+- name: IaC Workshop - Trigger Recalculate & Deploy Configuration for MSD Fabric
   hosts: ndfc
   gather_facts: false
   connection: httpapi
   collections:
     - cisco.dcnm
+  vars_prompt:
+    - name: pod_num
+      prompt: Please enter Pod number (0-9)?
+      private: no
   vars:
-    pod_num: 1
+    ansible_command_timeout: 600
+    # ansible_connect_timeout: 180
   tasks:
-    - name: POST Config Save
+    - name: POST Recalculate MSD Fabric (Config Save)
       dcnm_rest:
         method: POST
         path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/AUTO-POD{{pod_num}}-MSD/config-save"
         data: null
       ignore_errors: yes
-      timeout: 180
+      # timeout: 180
     - name: Pause for 2 minutes
       ansible.builtin.pause:
         minutes: 2
-    - name: POST Config Deploy
+    - name: POST Deploy MSD Fabric (Config Deploy)
       dcnm_rest:
         method: POST
         path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/AUTO-POD{{pod_num}}-MSD/config-deploy?inclAllMSDSwitches=true"
         data: null
       ignore_errors: yes
-      timeout: 180
+      # timeout: 180
