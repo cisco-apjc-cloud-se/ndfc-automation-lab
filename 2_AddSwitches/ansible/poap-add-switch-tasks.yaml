@@ -28,11 +28,14 @@
         reAdd: false
         imagePolicy: ""
         role: "{{switch.role}}"
+  when: data is defined
 - name: JSON Payload
   ansible.builtin.debug:
     msg: "{{ payload }}"
+  when: data is defined
 - name: POST New Fabric JSON
   dcnm_rest:
     method: POST
     path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/AUTO-POD{{pod_num}}-DC{{dc_num}}/inventory/poap"
     data: "{{ payload | to_json }}"
+  when: payload is defined

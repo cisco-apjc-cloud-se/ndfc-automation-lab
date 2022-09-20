@@ -34,31 +34,32 @@
           - name: DC1-SPINE1
             # serialNumber: 9ACSWFLK2YN
             role: spine
-            mgmt_ip: 100.64.201.2
+            mgmt_ip: "100.64.20{{pod_num}}.2"
           - name: DC1-SPINE2
             # serialNumber: 9CXIRUKTTHQ
             role: spine
-            mgmt_ip: 100.64.201.3
+            mgmt_ip: "100.64.20{{pod_num}}.3"
           - name: DC1-LEAF1
             # serialNumber: 9JV0UUSBF8I
             role: leaf
-            mgmt_ip: 100.64.201.4
+            mgmt_ip: "100.64.20{{pod_num}}.4"
           - name: DC1-LEAF2
             # serialNumber: 9KS1O7CNJJG
             role: leaf
-            mgmt_ip: 100.64.201.5
+            mgmt_ip: "100.64.20{{pod_num}}.5"
           - name: DC1-ABGW1
             # serialNumber: 9K49T1EJVL1
             role: "border gateway"
-            mgmt_ip: 100.64.201.6
+            mgmt_ip: "100.64.20{{pod_num}}.6"
           - name: DC1-ABGW2
             # serialNumber: 9T3ILDL95HJ
             role: "border gateway"
-            mgmt_ip: 100.64.201.7
+            mgmt_ip: "100.64.20{{pod_num}}.7"
       include_tasks: poap-add-switch-tasks.yaml
       loop: "{{switches}}"
       loop_control:
         loop_var: switch
+      ignore_errors: true
     - name: Add Switches to DC2
       vars:
         dc_num: 2
@@ -66,12 +67,13 @@
           - name: DC2-VBGW1
             # serialNumber: 9LX3N37XJ76
             role: "border gateway"
-            mgmt_ip: 100.64.201.66
+            mgmt_ip: "100.64.20{{pod_num}}.66"
           - name: DC2-VBGW2
             # serialNumber: 9F1CK93TQKZ
             role: "border gateway"
-            mgmt_ip: 100.64.201.67
+            mgmt_ip: "100.64.20{{pod_num}}.67"
       include_tasks: poap-add-switch-tasks.yaml
       loop: "{{switches}}"
       loop_control:
         loop_var: switch
+      ignore_errors: true
